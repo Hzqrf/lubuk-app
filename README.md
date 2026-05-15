@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lubuk 🎣
 
-## Getting Started
+**Lubuk** is a modern, community-driven fishing map platform. It allows anglers to explore fishing spots, pinpoint their precise locations, and log their catches with photos and details on an interactive map.
 
-First, run the development server:
+![Lubuk MVP Presentation](https://placehold.co/800x400?text=Lubuk+Fishing+Map)
+
+## ✨ Features
+
+- 🗺️ **Interactive Open-Source Map**: Built entirely on top of React Leaflet and OpenStreetMap. No paid Mapbox APIs required.
+- 📍 **Precise Geolocation**: Instantly fly to your current location with a single tap, dropping a custom "You are here" marker.
+- 🐟 **Custom Catch Logging**: Add markers for your catches directly on the map. Select species, write notes, and upload photos.
+- 📸 **Cloud Image Storage**: Catch photos are securely uploaded and served globally via Supabase Storage.
+- 🔐 **Authentication**: Secure Google OAuth integration ensuring only authenticated users can pollute the map with their catches.
+- 🎯 **Dynamic Filtering**: Instantly filter the map to only show specific fish species (e.g., Haruan, Toman, Peacock Bass) without reloading the page.
+- 🌓 **Dark Mode Support**: Deep integration with Mantine's color schemes with a custom dark-mode fallback tile layer.
+- 📱 **Mobile First**: Built with responsive Drawers and Modals that feel like native iOS/Android applications.
+
+## 🛠️ Tech Stack
+
+- **Framework**: [Next.js 15 (App Router)](https://nextjs.org/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **UI Components**: [Mantine UI v7](https://mantine.dev/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Map Engine**: [React Leaflet](https://react-leaflet.js.org/) + [OpenStreetMap](https://www.openstreetmap.org/)
+- **State Management**: [Zustand](https://github.com/pmndrs/zustand)
+- **Backend & Auth**: [Supabase](https://supabase.com/)
+
+---
+
+## 🚀 Getting Started
+
+Follow these instructions to get a local copy up and running.
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/your-username/lubuk-app.git
+cd lubuk-app
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Setup Supabase (Backend)
+
+You need a Supabase project to handle the database, authentication, and image storage.
+
+1. Create a new project on [Supabase](https://supabase.com/).
+2. Enable **Google Auth** in `Authentication > Providers`.
+3. Navigate to the **SQL Editor** in your Supabase dashboard.
+4. Copy the contents of the `supabase/schema.sql` file from this repository and run it. This script automatically:
+   - Creates the `catches` table.
+   - Sets up Row Level Security (RLS) policies.
+   - Creates the `catches-images` public storage bucket.
+
+### 4. Configure Environment Variables
+
+Create a `.env.local` file in the root of the project by copying the example:
+
+```bash
+cp .env.example .env.local
+```
+
+Update it with your Supabase credentials found in `Project Settings > API`:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL="https://your-project.supabase.co"
+NEXT_PUBLIC_SUPABASE_ANON_KEY="your-anon-key"
+```
+
+### 5. Run the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🏗️ Architecture Notes
 
-## Learn More
+To prevent Next.js Server-Side Rendering (SSR) from crashing when accessing `window` objects required by Leaflet, the map component (`MapComponent.tsx`) is heavily isolated. It is dynamically imported into `page.tsx` with `ssr: false`. 
 
-To learn more about Next.js, take a look at the following resources:
+All Supabase clients rely on `@supabase/ssr` to ensure secure browser state. Image compression and resizing are currently handled through native file validation bounds prior to upload.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📄 License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is open-source and available under the MIT License.
