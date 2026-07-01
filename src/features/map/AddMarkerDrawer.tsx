@@ -1,12 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Drawer, Button, Select, Textarea, Group, Stack, FileInput, Image as MantineImage, LoadingOverlay, Text } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { IconUpload } from '@tabler/icons-react';
-import { useMarkerStore, FishSpecies } from '@/lib/store/useMarkerStore';
+import { useMarkerStore } from '@/lib/store/useMarkerStore';
 import { useAuthStore } from '@/lib/store/useAuthStore';
-import { FISH_SPECIES } from '@/lib/constants';
+import { useSpeciesStore } from '@/lib/store/useSpeciesStore';
 import { createClient } from '@/lib/supabase/client';
 
 interface AddMarkerDrawerProps {
@@ -20,12 +20,15 @@ const supabase = createClient();
 export function AddMarkerDrawer({ opened, onClose, coordinates }: AddMarkerDrawerProps) {
   const addMarker = useMarkerStore((state) => state.addMarker);
   const user = useAuthStore((state) => state.user);
+  const { species, fetchSpecies } = useSpeciesStore();
   const [isUploading, setIsUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
+  useEffect(() => { fetchSpecies(); }, [fetchSpecies]);
+
   const form = useForm({
     initialValues: {
-      species: '' as FishSpecies | '',
+      species: '' as string,
       note: '',
       image: null as File | null,
     },
@@ -96,9 +99,9 @@ export function AddMarkerDrawer({ opened, onClose, coordinates }: AddMarkerDrawe
     }
   };
 
-  const speciesData = FISH_SPECIES.map((s) => ({
-    value: s.value,
-    label: `${s.emoji} ${s.label}`,
+  const speciesData = species.map((s) => ({
+    value: s.name,
+    label: `${s.emoji} ${s.name}`,
   }));
 
   return (

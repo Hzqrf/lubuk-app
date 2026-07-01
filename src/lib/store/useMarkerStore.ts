@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 import { createClient } from '@/lib/supabase/client';
 
-export type FishSpecies = 'Haruan' | 'Toman' | 'Patin' | 'Peacock Bass' | 'Tilapia';
+// FishSpecies is now dynamic from the database
+export type FishSpecies = string;
 
 export interface MarkerData {
   id: string;
@@ -22,7 +23,7 @@ interface MarkerStore {
   fetchCatches: () => Promise<void>;
   addMarker: (marker: Omit<MarkerData, 'id' | 'timestamp'>) => Promise<void>;
   setSelectedMarker: (marker: MarkerData | null) => void;
-  setActiveFilter: (filter: FishSpecies | 'All') => void;
+  setActiveFilter: (filter: string | 'All') => void;
 }
 
 const supabase = createClient();

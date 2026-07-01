@@ -1,10 +1,15 @@
 @import "tailwindcss";
 @import "@mantine/core/styles.css";
 @import "leaflet/dist/leaflet.css";
+@import "react-leaflet-cluster/dist/assets/MarkerCluster.css";
+@import "react-leaflet-cluster/dist/assets/MarkerCluster.Default.css";
 
 /* Leaflet specific global fixes */
 .leaflet-container {
-  z-index: 10;
+  height: 100%;
+  width: 100%;
+  min-height: 400px;
+  z-index: 1;
 }
 .custom-leaflet-popup .leaflet-popup-content-wrapper {
   background: transparent;
@@ -35,7 +40,5 @@
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
