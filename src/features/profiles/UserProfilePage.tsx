@@ -34,6 +34,7 @@ import {
   IconHeart,
   IconEdit,
   IconUpload,
+  IconLayoutList,
 } from '@tabler/icons-react';
 import { useAuthStore } from '@/lib/store/useAuthStore';
 import { useSocialStore } from '@/lib/store/useSocialStore';
@@ -41,8 +42,11 @@ import { useProfileStore } from '@/lib/store/useProfileStore';
 import { profileService } from '@/features/profiles/profileService';
 import { badgesService, BADGE_DEFINITIONS } from '@/features/notifications/badgesService';
 import { followService } from '@/features/follows/followService';
-import { Profile, Badge, Catch } from '@/lib/types';
+import { Profile } from '@/lib/types';
 import { formatDistanceToNow } from 'date-fns';
+import { FeedCard } from '@/features/feed/FeedCard';
+import { FeedCatch } from '@/lib/store/useFeedStore';
+
 
 interface UserProfilePageProps {
   userId: string;
@@ -52,8 +56,9 @@ export function UserProfilePage({ userId }: UserProfilePageProps) {
   const currentUser = useAuthStore((state) => state.user);
   const { profile, fetchProfile, updateProfile } = useProfileStore();
   
-  const [badges, setBadges] = useState<Badge[]>([]);
-  const [recentCatches, setRecentCatches] = useState<Catch[]>([]);
+  const [badges, setBadges] = useState<any[]>([]);
+  const [recentCatches, setRecentCatches] = useState<any[]>([]);
+  const [userPosts, setUserPosts] = useState<FeedCatch[]>([]);
   const [followStats, setFollowStats] = useState({ followers: 0, following: 0 });
   const [isFollowing, setIsFollowing] = useState(false);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -79,6 +84,19 @@ export function UserProfilePage({ userId }: UserProfilePageProps) {
         const catches = await profileService.getUserCatches(userId);
         setRecentCatches(catches);
 
+        // Build FeedCatch-shaped posts for the Posts tab
+        const profileData = await profileService.getProfile(userId);
+        const posts: FeedCatch[] = catches.map((c: any) => ({
+          ...c,
+          species: c.fish_species,
+          timestamp: c.created_at,
+          profiles: {
+            display_name: profileData?.display_name || 'Anonymous Angler',
+            avatar_url: profileData?.avatar_url || '',
+          },
+        }));
+        setUserPosts(posts);
+
         const stats = await followService.getFollowStats(userId);
         setFollowStats(stats);
 
@@ -103,7 +121,7 @@ export function UserProfilePage({ userId }: UserProfilePageProps) {
     };
 
     loadProfileData();
-  }, [userId, currentUser, fetchProfile, profile]);
+  }, [userId, currentUser, fetchProfile]);
 
   const handleFollowToggle = async () => {
     if (!currentUser) return;
@@ -282,8 +300,11 @@ export function UserProfilePage({ userId }: UserProfilePageProps) {
       )}
 
       {/* Tabs */}
-      <Tabs defaultValue="catches">
+      <Tabs defaultValue="posts">
         <Tabs.List>
+          <Tabs.Tab value="posts" leftSection={<IconLayoutList size={16} />}>
+            Posts
+          </Tabs.Tab>
           <Tabs.Tab value="catches" leftSection={<IconHeart size={16} />}>
             Catches
           </Tabs.Tab>
@@ -292,6 +313,22 @@ export function UserProfilePage({ userId }: UserProfilePageProps) {
           </Tabs.Tab>
         </Tabs.List>
 
+        {/* Posts Tab */}
+        <Tabs.Panel value="posts" py="lg">
+          {userPosts.length > 0 ? (
+            <Stack gap={0}>
+              {userPosts.map((post) => (
+                <FeedCard key={post.id} catchData={post} />
+              ))}
+            </Stack>
+          ) : (
+            <Text c="dimmed" ta="center" py="xl">
+              No posts yet
+            </Text>
+          )}
+        </Tabs.Panel>
+
+        {/* Catches Grid Tab */}
         <Tabs.Panel value="catches" py="lg">
           {recentCatches.length > 0 ? (
             <SimpleGrid cols={{ base: 2, sm: 3 }} gap="md">
