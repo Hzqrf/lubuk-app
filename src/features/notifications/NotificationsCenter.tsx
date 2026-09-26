@@ -134,7 +134,7 @@ export function NotificationsCenter({ opened, onClose }: NotificationsCenterProp
             notifications.map((notification) => (
               <NotificationItem
                 key={notification.id}
-                notification={notification}
+                notification={notification as any}
                 onMarkAsRead={() => handleMarkAsRead(notification.id)}
                 onDelete={() => handleDeleteNotification(notification.id)}
               />
@@ -161,9 +161,6 @@ function NotificationItem({
   onMarkAsRead,
   onDelete,
 }: NotificationItemProps) {
-  const actor = (notification as any).actor;
-  const message = getNotificationMessage(notification);
-
   const getNotificationMessage = (notification: NotificationWithProfiles) => {
     const actor = (notification as any).actor;
     const actorName = actor?.display_name || 'Someone';
@@ -179,6 +176,9 @@ function NotificationItem({
         return 'New notification';
     }
   };
+
+  const actor = (notification as any).actor;
+  const message = getNotificationMessage(notification);
 
   return (
     <Box

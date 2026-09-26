@@ -101,7 +101,7 @@ export function CommentDrawer({ catchId, opened, onClose }: CommentDrawerProps) 
                   variant="subtle"
                   color="red"
                   size="sm"
-                  onClick={() => deleteComment(comment.id, catchId)}
+                  onClick={() => deleteComment(comment.id, catchId, user?.id || '')}
                   style={{ flexShrink: 0 }}
                 >
                   <IconTrash size={14} />

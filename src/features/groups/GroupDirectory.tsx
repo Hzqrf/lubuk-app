@@ -103,7 +103,7 @@ export function GroupDirectory() {
                     <Stack p="md" gap="xs" style={{ flexGrow: 1 }}>
                       <Title order={4}>{group.name}</Title>
                       
-                      <Group gap="sm" c="dimmed" size="sm">
+                      <Group gap="sm" c="dimmed">
                         <Group gap={4}>
                           <IconUsers size={14} />
                           <Text size="xs">{group.members} members</Text>

@@ -64,7 +64,7 @@ export function ReputationView() {
                   <Text fw={700} c="yellow.4">{mockReputation.nextRankScore} pts</Text>
                 </Group>
                 <Progress value={progressToNextRank} color="yellow" size="xl" radius="xl" striped animated />
-                <Text size="sm" c="blue.2" align="right">
+                <Text size="sm" c="blue.2" ta="right">
                   {mockReputation.nextRankScore - mockReputation.score} points to go
                 </Text>
               </Stack>

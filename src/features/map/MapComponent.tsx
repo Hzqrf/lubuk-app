@@ -234,7 +234,11 @@ export default function MapComponent() {
 
   const filteredMarkers = activeFilter === 'All'
     ? markers
-    : markers.filter((m) => m.species === activeFilter);
+    : markers.filter((m) => 
+        m.species === activeFilter ||
+        m.species.toLowerCase().includes(activeFilter.toLowerCase()) ||
+        m.note?.toLowerCase().includes(activeFilter.toLowerCase())
+      );
 
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>

@@ -111,7 +111,7 @@ export function UserProfilePage({ userId }: UserProfilePageProps) {
           if (currentUser.id === userId) {
             setFormData({
               displayName: profile?.display_name || '',
-              bio: profile?.bio || '',
+              bio: (profile as any)?.bio || '',
             });
           }
         }
@@ -139,7 +139,7 @@ export function UserProfilePage({ userId }: UserProfilePageProps) {
       await updateProfile(currentUser.id, {
         display_name: formData.displayName,
         bio: formData.bio,
-      });
+      } as any);
       setIsEditingProfile(false);
     } catch (error) {
       console.error('Error updating profile:', error);
@@ -196,9 +196,9 @@ export function UserProfilePage({ userId }: UserProfilePageProps) {
                   </ActionIcon>
                 )}
               </Group>
-              {profile.bio && (
+              {(profile as any).bio && (
                 <Text size="sm" c="dimmed">
-                  {profile.bio}
+                  {(profile as any).bio}
                 </Text>
               )}
               <Text size="xs" c="dimmed">
@@ -267,7 +267,7 @@ export function UserProfilePage({ userId }: UserProfilePageProps) {
         <Grid.Col span={{ base: 6, sm: 3 }}>
           <Box ta="center">
             <Text size="lg" fw={700}>
-              {profile.fish_species_count}
+              {(profile as any).fish_species_count}
             </Text>
             <Text size="sm" c="dimmed">
               Species
@@ -331,7 +331,7 @@ export function UserProfilePage({ userId }: UserProfilePageProps) {
         {/* Catches Grid Tab */}
         <Tabs.Panel value="catches" py="lg">
           {recentCatches.length > 0 ? (
-            <SimpleGrid cols={{ base: 2, sm: 3 }} gap="md">
+            <SimpleGrid cols={{ base: 2, sm: 3 }} spacing="md">
               {recentCatches.map((catch_item) => (
                 <Card
                   key={catch_item.id}

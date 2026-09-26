@@ -58,7 +58,7 @@ export function FishDex() {
               <Text fw={700} c="blue.6">{caughtCount} / {totalCount}</Text>
             </Group>
             <Progress value={progressPercent} color="blue" size="xl" radius="xl" striped animated />
-            <Text size="xs" c="dimmed" align="right">{progressPercent.toFixed(0)}% Completed</Text>
+            <Text size="xs" c="dimmed" ta="right">{progressPercent.toFixed(0)}% Completed</Text>
           </Stack>
         </Card>
 
